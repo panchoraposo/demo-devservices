@@ -13,8 +13,6 @@ components:
       cpuLimit: "1"
       mountSources: true
       sourceMapping: /projects
-      command: [ "tail" ]
-      args: [ "-f", "/dev/null" ]
       env:
         - name: DOTNET_ROOT
           value: /usr/share/dotnet
@@ -38,7 +36,7 @@ components:
 
   - name: postgres
     container:
-      image: postgres:15
+      image: registry.redhat.io/rhel10/postgresql-16
       memoryLimit: 512Mi
       env:
         - name: POSTGRES_DB
