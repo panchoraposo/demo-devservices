@@ -10,13 +10,13 @@ string connectionString;
 if (environment == "DevSpaces")
 {
     var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
-    Console.WriteLine($"🔧 DB_HOST = {host}");
     var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
     var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "moviesdb";
     var user = Environment.GetEnvironmentVariable("DB_USER") ?? "devuser";
     var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "devpass";
 
     connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
+    Console.WriteLine($"🔧 ConnectionString = {connectionString}");
 }
 else
 {
