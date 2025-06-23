@@ -9,7 +9,6 @@ components:
       memoryLimit: 3Gi
       mountSources: true
       sourceMapping: /projects
-      dedicatedPod: true
       command: ["sleep"]
       args: ["infinity"]
 
