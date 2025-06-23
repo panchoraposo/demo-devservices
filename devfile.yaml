@@ -8,6 +8,10 @@ components:
   - name: dotnet-container
     container:
       image: mcr.microsoft.com/dotnet/sdk:9.0
+      memoryLimit: 2Gi
+      cpuLimit: "1"
+      mountSources: true
+      sourceMapping: /projects
       env:
         - name: DOTNET_ROOT
           value: /usr/share/dotnet
@@ -23,10 +27,6 @@ components:
           value: devuser
         - name: DB_PASSWORD
           value: devpass
-      sourceMapping: /projects
-      mountSources: true
-      memoryLimit: 2Gi
-      cpuLimit: "1"
       endpoints:
         - name: http
           targetPort: 5099
@@ -35,7 +35,7 @@ components:
 
   - name: postgres
     container:
-      image: registry.redhat.io/rhel10/postgresql-16
+      image: postgres:15
       memoryLimit: 512Mi
       env:
         - name: POSTGRES_DB
@@ -44,7 +44,7 @@ components:
           value: devuser
         - name: POSTGRES_PASSWORD
           value: devpass
-
+          
 commands:
   - id: build
     exec:
