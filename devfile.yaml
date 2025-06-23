@@ -1,0 +1,70 @@
+schemaVersion: 2.2.0
+metadata:
+  name: dotnet9-movies-api
+  version: 1.0.0
+attributes:
+  alpha.dockerimage-port: 5000
+components:
+  - name: dotnet-container
+    container:
+      image: mcr.microsoft.com/dotnet/sdk:9.0
+      env:
+        - name: DOTNET_ROOT
+          value: /usr/share/dotnet
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:5000
+        - name: DB_HOST
+          value: postgres
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: moviesdb
+        - name: DB_USER
+          value: devuser
+        - name: DB_PASSWORD
+          value: devpass
+      sourceMapping: /projects
+      mountSources: true
+      memoryLimit: 2Gi
+      cpuLimit: 1
+      ports:
+        - name: http
+          containerPort: 5000
+
+  - name: postgres
+    container:
+      image: registry.redhat.io/rhel10/postgresql-16
+      memoryLimit: 512Mi
+      env:
+        - name: POSTGRES_DB
+          value: moviesdb
+        - name: POSTGRES_USER
+          value: devuser
+        - name: POSTGRES_PASSWORD
+          value: devpass
+      ports:
+        - containerPort: 5432
+
+commands:
+  - id: build
+    exec:
+      label: Build .NET app
+      component: dotnet-container
+      workingDir: /projects/dotnet/my-dotnet-app
+      commandLine: dotnet build
+      group:
+        kind: build
+        isDefault: true
+  - id: run
+    exec:
+      label: Run .NET app
+      component: dotnet-container
+      workingDir: /projects/dotnet/my-dotnet-app
+      commandLine: dotnet run --launch-profile Dev
+      group:
+        kind: run
+        isDefault: true
+
+events:
+  preStart:
+    - build
