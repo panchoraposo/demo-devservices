@@ -9,7 +9,7 @@ string connectionString;
 
 if (environment == "DevSpaces")
 {
-    var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "moviesdb-pg";
+    var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "postgres";
     var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
     var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "moviesdb";
     var user = Environment.GetEnvironmentVariable("DB_USER") ?? "devuser";
