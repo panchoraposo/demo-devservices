@@ -72,6 +72,8 @@ commands:
         kind: run
         isDefault: true
 
-events:
-  preStart:
-    - build
+  - id: build-all
+    composite:
+      label: Build All
+      commands:
+        - build
