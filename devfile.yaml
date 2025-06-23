@@ -78,7 +78,7 @@ commands:
   - id: run
     exec:
       component: tools
-      commandLine: dotnet run --launch-profile Dev
+      commandLine: dotnet run --launch-profile DevSpaces
       workingDir: /projects/demo-devservices/dotnet/my-dotnet-app
       group:
         kind: run
