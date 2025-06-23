@@ -1,60 +1,64 @@
 schemaVersion: 2.2.0
 metadata:
-  name: dotnet9-movies-api
+  name: dotnet8-testcontainers
   version: 1.0.0
-
 components:
-  - name: dotnet-sdk
+  - name: tools
     container:
-      image: mcr.microsoft.com/dotnet/sdk:9.0
-      memoryLimit: 2Gi
-      cpuLimit: "1"
+      image: mcr.microsoft.com/dotnet/sdk:8.0
+      memoryLimit: 3Gi
       mountSources: true
       sourceMapping: /projects
+      command: ["sleep"]
+      args: ["infinity"]
       env:
-        - name: DOTNET_ROOT
-          value: /usr/share/dotnet
-        - name: ASPNETCORE_URLS
-          value: http://0.0.0.0:5099
-        - name: DB_HOST
-          value: postgres
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_NAME
+        - name: DOTNET_CLI_HOME
+          value: "/projects/.dotnet"
+        - name: DOTNET_CLI_TELEMETRY_OPTOUT
+          value: "1"
+        - name: DOTNET_USE_POLLING_FILE_WATCHER
+          value: "1"
+      volumeMounts:
+        - name: docker-sock
+          path: /var/run/docker.sock
+  
+  - name: postgres
+    container:
+      image: postgres:15
+      memoryLimit: 512Mi
+      env:
+        - name: POSTGRES_DB
           value: moviesdb
-        - name: DB_USER
+        - name: POSTGRES_USER
           value: devuser
-        - name: DB_PASSWORD
+        - name: POSTGRES_PASSWORD
           value: devpass
       endpoints:
-        - name: http
-          targetPort: 5099
-          exposure: public
-          protocol: http
+        - name: postgres
+          targetPort: 5432
+          exposure: internal
+          protocol: tcp
+
+  - name: docker-sock
+    volume:
+      ephemeral: false
 
 commands:
   - id: build
     exec:
-      label: Build .NET app
-      component: dotnet-sdk
-      workingDir: /projects/dotnet/my-dotnet-app
-      commandLine: dotnet build
+      component: tools
+      commandLine: |
+        mkdir -p /projects/.dotnet && dotnet build
+      workingDir: /projects/dotnet-devspaces/my-dotnet-app/MyApi
       group:
         kind: build
         isDefault: true
 
   - id: run
     exec:
-      label: Run .NET app
-      component: dotnet-sdk
-      workingDir: /projects/dotnet/my-dotnet-app
-      commandLine: dotnet run --launch-profile Dev
+      component: tools
+      commandLine: dotnet run --no-launch-profile --urls=http://0.0.0.0:5000
+      workingDir: /projects/dotnet-devspaces/my-dotnet-app/MyApi
       group:
         kind: run
         isDefault: true
-
-  - id: build-all
-    composite:
-      label: Build All
-      commands:
-        - build
