@@ -1,24 +1,77 @@
 schemaVersion: 2.2.0
 metadata:
-  name: minimal
+  name: dotnet9-movies-api
   version: 1.0.0
+attributes:
+  alpha.dockerimage-port: 5099
 
 components:
-  - name: busybox-container
+  - name: dotnet-sdk
     container:
-      image: busybox
-      command: ["tail"]
-      args: ["-f", "/dev/null"]
-      memoryLimit: 256Mi
-      cpuLimit: "0.2"
+      image: mcr.microsoft.com/dotnet/sdk:9.0
+      memoryLimit: 2Gi
+      cpuLimit: "1"
+      mountSources: true
+      sourceMapping: /projects
+      env:
+        - name: DOTNET_ROOT
+          value: /usr/share/dotnet
+        - name: ASPNETCORE_URLS
+          value: http://0.0.0.0:5099
+        - name: DB_HOST
+          value: postgres
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: moviesdb
+        - name: DB_USER
+          value: devuser
+        - name: DB_PASSWORD
+          value: devpass
+      endpoints:
+        - name: http
+          targetPort: 5099
+          exposure: public
+          protocol: http
+
+  - name: postgres
+    container:
+      image: postgres:15
+      memoryLimit: 512Mi
+      env:
+        - name: POSTGRES_DB
+          value: moviesdb
+        - name: POSTGRES_USER
+          value: devuser
+        - name: POSTGRES_PASSWORD
+          value: devpass
+      endpoints:
+        - name: postgres
+          targetPort: 5432
+          exposure: internal
+          protocol: tcp
 
 commands:
-  - id: idle
+  - id: build
     exec:
-      label: Keep container alive
-      component: dotnet-container
-      workingDir: /projects
-      commandLine: tail -f /dev/null
+      label: Build .NET app
+      component: dotnet-sdk
+      workingDir: /projects/dotnet/my-dotnet-app
+      commandLine: dotnet build
+      group:
+        kind: build
+        isDefault: true
+
+  - id: run
+    exec:
+      label: Run .NET app
+      component: dotnet-sdk
+      workingDir: /projects/dotnet/my-dotnet-app
+      commandLine: dotnet run --launch-profile Dev
       group:
         kind: run
         isDefault: true
+
+events:
+  preStart:
+    - build
