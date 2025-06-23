@@ -45,24 +45,6 @@ components:
         - name: docker-sock
           path: /var/run/docker.sock
 
-  - name: postgres
-    container:
-      image: registry.redhat.io/rhel10/postgresql-16
-      memoryLimit: 512Mi
-      dedicatedPod: true
-      env:
-        - name: POSTGRESQL_DATABASE
-          value: moviesdb
-        - name: POSTGRESQL_USER
-          value: devuser
-        - name: POSTGRESQL_PASSWORD
-          value: devpass
-      endpoints:
-        - name: postgres
-          targetPort: 5432
-          exposure: none
-          protocol: tcp
-
   - name: docker-sock
     volume:
       ephemeral: false
