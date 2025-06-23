@@ -68,7 +68,7 @@ commands:
       component: tools
       commandLine: |
         mkdir -p /projects/.dotnet && dotnet build
-      workingDir: /projects/dotnet-devspaces/my-dotnet-app/MyApi
+      workingDir: /projects/demo-devservices/dotnet/my-dotnet-app
       group:
         kind: build
         isDefault: true
@@ -76,8 +76,8 @@ commands:
   - id: run
     exec:
       component: tools
-      commandLine: dotnet run --no-launch-profile --urls=http://0.0.0.0:5000
-      workingDir: /projects/dotnet-devspaces/my-dotnet-app/MyApi
+      commandLine: dotnet run --launch-profile Dev
+      workingDir: projects/demo-devservices/dotnet/my-dotnet-app
       group:
         kind: run
         isDefault: true
