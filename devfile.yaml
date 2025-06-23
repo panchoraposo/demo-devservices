@@ -48,13 +48,3 @@ components:
         - name: POSTGRES_PASSWORD
           value: devpass
 
-commands:
-  - id: idle
-    exec:
-      label: Keep container alive
-      component: dotnet-container
-      workingDir: /projects
-      commandLine: tail -f /dev/null
-      group:
-        kind: run
-        isDefault: true
