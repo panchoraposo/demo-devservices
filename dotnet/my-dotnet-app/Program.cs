@@ -34,7 +34,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllers();
 
+// Swagger services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment() || environment == "DevSpaces")
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Movies API v1");
+        c.RoutePrefix = string.Empty;
+    });
+}
 
 app.MapGet("/", () => "✅ .NET Dev Service activo con PostgreSQL");
 app.MapControllers();
