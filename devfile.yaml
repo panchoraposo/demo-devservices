@@ -15,11 +15,10 @@ components:
 commands:
   - id: idle
     exec:
-      label: Keep alive
-      component: busybox-container
-      commandLine: tail
-      args: ["-f", "/dev/null"]
-      workingDir: /
+      label: Keep container alive
+      component: dotnet-container
+      workingDir: /projects
+      commandLine: tail -f /dev/null
       group:
         kind: run
         isDefault: true
