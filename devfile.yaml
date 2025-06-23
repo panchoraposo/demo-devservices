@@ -13,6 +13,8 @@ components:
       cpuLimit: "1"
       mountSources: true
       sourceMapping: /projects
+      command: [ "tail" ]
+      args: [ "-f", "/dev/null" ]
       env:
         - name: DOTNET_ROOT
           value: /usr/share/dotnet
