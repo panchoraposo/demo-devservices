@@ -56,22 +56,3 @@ commands:
       group:
         kind: run
         isDefault: true
-
-  - id: build
-    exec:
-      label: Build .NET app
-      component: dotnet-container
-      workingDir: /projects/dotnet/my-dotnet-app
-      commandLine: dotnet build
-      group:
-        kind: build
-        isDefault: true
-
-  - id: run
-    exec:
-      label: Run .NET app
-      component: dotnet-container
-      workingDir: /projects/dotnet/my-dotnet-app
-      commandLine: dotnet run --launch-profile Dev
-      group:
-        kind: run
