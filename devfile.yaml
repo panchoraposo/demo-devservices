@@ -27,6 +27,11 @@ components:
       mountSources: true
       memoryLimit: 2Gi
       cpuLimit: "1"
+      endpoints:
+        - name: http
+          targetPort: 5099
+          exposure: public
+          protocol: http
 
   - name: postgres
     container:
@@ -40,14 +45,6 @@ components:
         - name: POSTGRES_PASSWORD
           value: devpass
 
-  # Agregar endpoints válidos (usualmente en el container principal)
-  - name: dotnet-endpoint
-    endpoint:
-      name: http
-      targetPort: 5099
-      exposure: public
-      protocol: http
-
 commands:
   - id: build
     exec:
@@ -58,6 +55,7 @@ commands:
       group:
         kind: build
         isDefault: true
+
   - id: run
     exec:
       label: Run .NET app
