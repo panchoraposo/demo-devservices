@@ -22,6 +22,8 @@ components:
           value: /usr/share/dotnet
         - name: ASPNETCORE_URLS
           value: http://0.0.0.0:5099
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Dev
         - name: DB_HOST
           value: postgres
         - name: DB_PORT
@@ -40,7 +42,7 @@ components:
       volumeMounts:
         - name: docker-sock
           path: /var/run/docker.sock
-  
+
   - name: postgres
     container:
       image: registry.redhat.io/rhel10/postgresql-16
@@ -57,7 +59,7 @@ components:
           targetPort: 5432
           exposure: internal
           protocol: tcp
-  
+
   - name: docker-sock
     volume:
       ephemeral: false
@@ -77,7 +79,7 @@ commands:
     exec:
       component: tools
       commandLine: dotnet run --launch-profile Dev
-      workingDir: projects/demo-devservices/dotnet/my-dotnet-app
+      workingDir: /projects/demo-devservices/dotnet/my-dotnet-app
       group:
         kind: run
         isDefault: true

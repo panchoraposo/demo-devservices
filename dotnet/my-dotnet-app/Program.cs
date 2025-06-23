@@ -3,41 +3,42 @@ using Testcontainers.PostgreSql;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var postgres = new PostgreSqlBuilder()
-    //.WithImage("registry.redhat.io/rhel10/postgresql-16")
-    .WithDatabase("testdb")
-    .WithUsername("testuser")
-    .WithPassword("testpass")
-    .Build();
+// Leer variable de entorno para saber si estamos en DevSpaces
+var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-await postgres.StartAsync();
+string connectionString;
 
-var connectionString = postgres.GetConnectionString();
+if (environment == "DevSpaces")
+{
+    // En DevSpaces, la base de datos ya está corriendo (definida en el devfile)
+    // Usamos las variables de entorno para armar la cadena
+    var host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+    var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+    var db = Environment.GetEnvironmentVariable("DB_NAME") ?? "moviesdb";
+    var user = Environment.GetEnvironmentVariable("DB_USER") ?? "devuser";
+    var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "devpass";
+
+    connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password}";
+}
+else
+{
+    // En local usamos Testcontainers con Podman/Docker
+    var postgres = new PostgreSqlBuilder()
+        .WithDatabase("testdb")
+        .WithUsername("testuser")
+        .WithPassword("testpass")
+        .Build();
+
+    await postgres.StartAsync();
+    connectionString = postgres.ConnectionString;
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-    context.Database.EnsureCreated();
-
-    DbInitializer.Seed(context);
-}
-
-if (app.Environment.IsDevelopment() || true)
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 
 app.MapGet("/", () => "✅ .NET Dev Service activo con PostgreSQL");
 app.MapControllers();
