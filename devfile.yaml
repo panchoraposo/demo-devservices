@@ -5,7 +5,7 @@ metadata:
 components:
   - name: tools
     container:
-      image: mcr.microsoft.com/dotnet/sdk:8.0
+      image: mcr.microsoft.com/dotnet/sdk:9.0
       memoryLimit: 3Gi
       mountSources: true
       sourceMapping: /projects
