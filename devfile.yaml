@@ -65,7 +65,3 @@ commands:
       group:
         kind: run
         isDefault: true
-
-events:
-  preStart:
-    - build
