@@ -3,7 +3,7 @@ metadata:
   name: dotnet9-movies-api
   version: 1.0.0
 attributes:
-  alpha.dockerimage-port: 5000
+  alpha.dockerimage-port: 5099
 components:
   - name: dotnet-container
     container:
@@ -12,7 +12,7 @@ components:
         - name: DOTNET_ROOT
           value: /usr/share/dotnet
         - name: ASPNETCORE_URLS
-          value: http://0.0.0.0:5000
+          value: http://0.0.0.0:5099
         - name: DB_HOST
           value: postgres
         - name: DB_PORT
@@ -26,10 +26,7 @@ components:
       sourceMapping: /projects
       mountSources: true
       memoryLimit: 2Gi
-      cpuLimit: 1
-      ports:
-        - name: http
-          containerPort: 5000
+      cpuLimit: "1"
 
   - name: postgres
     container:
@@ -42,8 +39,14 @@ components:
           value: devuser
         - name: POSTGRES_PASSWORD
           value: devpass
-      ports:
-        - containerPort: 5432
+
+  # Agregar endpoints válidos (usualmente en el container principal)
+  - name: dotnet-endpoint
+    endpoint:
+      name: http
+      targetPort: 5099
+      exposure: public
+      protocol: http
 
 commands:
   - id: build
