@@ -34,23 +34,6 @@ components:
           exposure: public
           protocol: http
 
-  - name: postgres
-    container:
-      image: postgres:15
-      memoryLimit: 512Mi
-      env:
-        - name: POSTGRES_DB
-          value: moviesdb
-        - name: POSTGRES_USER
-          value: devuser
-        - name: POSTGRES_PASSWORD
-          value: devpass
-      endpoints:
-        - name: postgres
-          targetPort: 5432
-          exposure: internal
-          protocol: tcp
-
 commands:
   - id: build
     exec:
