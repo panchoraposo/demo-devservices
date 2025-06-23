@@ -4,6 +4,7 @@ metadata:
   version: 1.0.0
 attributes:
   alpha.dockerimage-port: 5099
+
 components:
   - name: dotnet-container
     container:
@@ -35,7 +36,7 @@ components:
 
   - name: postgres
     container:
-      image: postgres:15
+      image: registry.redhat.io/rhel10/postgresql-16
       memoryLimit: 512Mi
       env:
         - name: POSTGRES_DB
@@ -44,8 +45,18 @@ components:
           value: devuser
         - name: POSTGRES_PASSWORD
           value: devpass
-          
+
 commands:
+  - id: idle
+    exec:
+      label: Keep container alive
+      component: dotnet-container
+      workingDir: /projects
+      commandLine: tail -f /dev/null
+      group:
+        kind: run
+        isDefault: true
+
   - id: build
     exec:
       label: Build .NET app
@@ -64,4 +75,3 @@ commands:
       commandLine: dotnet run --launch-profile Dev
       group:
         kind: run
-        isDefault: true
