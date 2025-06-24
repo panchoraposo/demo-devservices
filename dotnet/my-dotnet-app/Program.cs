@@ -35,13 +35,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddControllers();
 
-// Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment() || environment == "DevSpaces")
+if (app.Environment.IsDevelopment() || environment == "DevSpaces" || environment == "Local")
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -58,8 +57,7 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    context.Database.EnsureCreated(); // O usa .Migrate() si prefieres migraciones
-
+    context.Database.EnsureCreated();
     DbInitializer.Seed(context);
 }
 
