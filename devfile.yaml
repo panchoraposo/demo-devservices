@@ -55,10 +55,10 @@ commands:
       component: tools
       commandLine: |
         echo "Deploying PostgreSQL DB to OpenShift..."
-        oc apply -f /projects/demo-devservices/dotnet/my-dotnet-app/openshift/postgres.yaml
+        oc apply -f /projects/devservices-dotnet8/my-dotnet-app/openshift/postgres.yaml
         echo "Waiting for PostgreSQL pod to be ready..."
         oc wait --for=condition=Ready pod -l app=postgres --timeout=60s
-      workingDir: /projects/demo-devservices/dotnet/my-dotnet-app/openshift/
+      workingDir: /projects/devservices-dotnet8/my-dotnet-app/openshift/
       group:
         kind: deploy
         isDefault: true
@@ -68,7 +68,7 @@ commands:
       component: tools
       commandLine: |
         mkdir -p /projects/.dotnet && dotnet build
-      workingDir: /projects/demo-devservices/dotnet/my-dotnet-app
+      workingDir: /projects/devservices-dotnet8/my-dotnet-app
       group:
         kind: build
         isDefault: true
@@ -77,7 +77,7 @@ commands:
     exec:
       component: tools
       commandLine: dotnet run --launch-profile DevSpaces
-      workingDir: /projects/demo-devservices/dotnet/my-dotnet-app
+      workingDir: /projects/devservices-dotnet8/my-dotnet-app
       group:
         kind: run
         isDefault: true
